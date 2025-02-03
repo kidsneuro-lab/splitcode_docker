@@ -1,0 +1,33 @@
+name: create_release
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+    environment:
+      name: dev
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        show-progress: 'false'
+
+    - name: Build Image
+      run: |
+        set -e
+        set -x
+        docker build -t test-splitcode:latest .
+
+    - name: Test image
+      run: |
+        set -e
+        set -x
+        docker run test-splitcode:latest --help
+        exit $?
